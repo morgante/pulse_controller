@@ -1,23 +1,13 @@
-
-/*  Pulse Sensor Amped 1.4    by Joel Murphy and Yury Gitman   http://www.pulsesensor.com
-
-----------------------  Notes ----------------------  ---------------------- 
-This code:
-1) Blinks an LED to User's Live Heartbeat   PIN 13
-2) Fades an LED to User's Live HeartBeat
-3) Determines BPM
-4) Prints All of the Above to Serial
-
-Read Me:
-https://github.com/WorldFamousElectronics/PulseSensor_Amped_Arduino/blob/master/README.md   
- ----------------------       ----------------------  ----------------------
-*/
-
 //  Variables
 int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
 int blinkPin = 13;                // pin to blink led at each beat
 int fadePin = 5;                  // pin to do fancy classy fading blink at each beat
 int fadeRate = 0;                 // used to fade LED on with PWM on fadePin
+
+// Flex variables
+int flexLeftPin = A1;
+int leftLedPin = 9;
+int flexMin = 700;
 
 // Volatile Variables, used in the interrupt service routine!
 volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
@@ -31,6 +21,9 @@ static boolean serialVisual = false;   // Set to 'false' by Default.  Re-set to 
 
 
 void setup(){
+
+  pinMode(leftLedPin, OUTPUT);
+  
   pinMode(blinkPin,OUTPUT);         // pin that will blink to your heartbeat!
   pinMode(fadePin,OUTPUT);          // pin that will fade to your heartbeat!
   Serial.begin(115200);             // we agree to talk fast!
@@ -43,6 +36,7 @@ void setup(){
 
 //  Where the Magic Happens
 void loop(){
+  digitalWrite(leftLedPin, HIGH);
   
     serialOutput() ;       
     
@@ -56,20 +50,5 @@ void loop(){
         QS = false;                      // reset the Quantified Self flag for next time    
   }
      
-  ledFadeToBeat();                      // Makes the LED Fade Effect Happen 
   delay(20);                             //  take a break
 }
-
-
-
-
-
-void ledFadeToBeat(){
-    fadeRate -= 15;                         //  set LED fade value
-    fadeRate = constrain(fadeRate,0,255);   //  keep LED fade value from going into negative numbers!
-    analogWrite(fadePin,fadeRate);          //  fade LED
-  }
-
-
-
-
