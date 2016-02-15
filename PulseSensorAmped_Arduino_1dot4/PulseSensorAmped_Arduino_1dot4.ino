@@ -54,25 +54,9 @@ void setup(){
 
 //  Where the Magic Happens
 void loop(){
-  int jumpSwitchState = !digitalRead(jumpSwitchPin);
-
-  if (jumpSwitchState) {
-    digitalWrite(jumpLedPin, HIGH);
-  } else {
-    digitalWrite(jumpLedPin, LOW);
-  }
-
-  int stopSwitchState = !digitalRead(stopSwitchPin);
-
-  if (stopSwitchState) {
-    digitalWrite(stopLedPin, HIGH);
-  } else {
-    digitalWrite(stopLedPin, LOW);
-  }
-
   // left & right handler
   int leftVal = analogRead(leftFlexPin);
-//  Serial.println(leftVal);
+  int leftActive = (leftVal >= leftFlexMin);
 
   if (leftVal >= leftFlexMin) {
     digitalWrite(leftLedPin, HIGH);
@@ -81,25 +65,35 @@ void loop(){
   }
 
   int rightVal = analogRead(rightFlexPin);
-//  Serial.println(rightVal);
+  bool rightActive = (rightVal >= rightFlexMin);
 
-  if (rightVal >= rightFlexMin) {
+  if (rightActive) {
     digitalWrite(rightLedPin, HIGH);
     delay(500);
     digitalWrite(rightLedPin, LOW);
   }
-  
-    serialOutput() ;       
-    
-  if (QS == true){     // A Heartbeat Was Found
-                       // BPM and IBI have been Determined
-                       // Quantified Self "QS" true when arduino finds a heartbeat
-        digitalWrite(blinkPin,HIGH);     // Blink LED, we got a beat. 
-        fadeRate = 255;         // Makes the LED Fade Effect Happen
-                                // Set 'fadeRate' Variable to 255 to fade LED with pulse
-        serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
-        QS = false;                      // reset the Quantified Self flag for next time    
+
+  if (rightActive && leftActive) {
+    Serial.println("W");
+  } else if (rightActive) {
+    Serial.println("R");
+  } else if (leftActive) {
+    Serial.println("L");
+  } else {
+    Serial.println("S");
   }
+  
+//    serialOutput() ;       
+//    
+//  if (QS == true){     // A Heartbeat Was Found
+//                       // BPM and IBI have been Determined
+//                       // Quantified Self "QS" true when arduino finds a heartbeat
+//        digitalWrite(blinkPin,HIGH);     // Blink LED, we got a beat. 
+//        fadeRate = 255;         // Makes the LED Fade Effect Happen
+//                                // Set 'fadeRate' Variable to 255 to fade LED with pulse
+//        serialOutputWhenBeatHappens();   // A Beat Happened, Output that to serial.     
+//        QS = false;                      // reset the Quantified Self flag for next time    
+//  }
 
   digitalWrite(blinkPin, LOW);
      
